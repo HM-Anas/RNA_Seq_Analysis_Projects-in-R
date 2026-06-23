@@ -8,7 +8,6 @@ This project identifies genes with significant temporal expression changes using
 - Timepoints: Day 0, Day 1, Day 3, Day 7
 
 ## Workflow
-
 1. Data preprocessing
 2. DESeq2 LRT analysis
 3. Significant gene identification
