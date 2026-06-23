@@ -1,0 +1,234 @@
+---
+title: "Time-Course Transcriptomic Analysis Using Likelihood Ratio Test"
+author: "Anas Jamshed"
+date: today
+
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    theme: cosmo
+
+  pdf:
+    toc: true
+    number-sections: true
+
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+
+```{r setup}
+library(knitr)
+library(dplyr)
+
+knitr::opts_chunk$set(
+  fig.align = "center",
+  out.width = "90%"
+)
+```
+
+# Abstract
+
+This study investigates temporal gene expression dynamics under Control, Low Intensity, and High Intensity stimulation conditions using RNA-Seq data. Differential temporal expression patterns were identified using the DESeq2 Likelihood Ratio Test (LRT). Significant genes were clustered based on expression trajectories, enabling characterization of condition-specific transcriptional programs across time.
+
+# Introduction
+
+Time-series transcriptomic experiments provide insight into dynamic molecular responses that cannot be captured by static differential expression analyses.
+
+Objectives:
+
+-   Identify genes exhibiting significant temporal expression changes.
+-   Compare transcriptional responses across Control, Low, and High intensity conditions.
+-   Cluster significant genes according to temporal expression patterns.
+-   Visualize biological trends through clustering and trajectory analysis.
+
+# Dataset Description
+
+Input files:
+
+-   combined_expression.tsv
+-   meta_v4_fixed.tsv
+
+Experimental Conditions:
+
+-   Control
+-   Low Intensity
+-   High Intensity
+
+Timepoints:
+
+-   Day 0
+-   Day 1
+-   Day 3
+-   Day 7
+
+# Statistical Analysis
+
+Differential expression analysis was performed using DESeq2 Likelihood Ratio Test (LRT).
+
+Full model:
+
+``` r
+~ Day + Intensity + Day:Intensity
+```
+
+Reduced model:
+
+``` r
+~ Day + Intensity
+```
+
+Genes showing significant temporal expression changes were selected for clustering analysis.
+
+# Significant Genes Summary
+
+```{r}
+control_genes <- readLines("Control_sig_genes.txt")
+low_genes <- readLines("Low_sig_genes.txt")
+high_genes <- readLines("High_sig_genes.txt")
+
+gene_summary <- data.frame(
+  Condition = c("Control","Low","High"),
+  Significant_Genes = c(
+    length(control_genes),
+    length(low_genes),
+    length(high_genes)
+  )
+)
+
+kable(gene_summary)
+```
+
+# Control Clusters
+
+## Cluster 1
+
+```{r}
+knitr::include_graphics("Control_cluster_1.png")
+```
+
+## Cluster 2
+
+```{r}
+knitr::include_graphics("Control_cluster_2.png")
+```
+
+## Cluster 3
+
+```{r}
+knitr::include_graphics("Control_cluster_3.png")
+```
+
+# Low Intensity Clusters
+
+## Cluster 1
+
+```{r}
+knitr::include_graphics("Low_cluster_1.png")
+```
+
+## Cluster 2
+
+```{r}
+knitr::include_graphics("Low_cluster_2.png")
+```
+
+## Cluster 3
+
+```{r}
+knitr::include_graphics("Low_cluster_3.png")
+```
+
+# High Intensity Clusters
+
+## Cluster 1
+
+```{r}
+knitr::include_graphics("High_cluster_1.png")
+```
+
+## Cluster 2
+
+```{r}
+knitr::include_graphics("High_cluster_2.png")
+```
+
+## Cluster 3
+
+```{r}
+knitr::include_graphics("High_cluster_3.png")
+```
+
+# LRT Results Summary
+
+## Control
+
+```{r}
+control_lrt <- read.delim("Control_lrt_results.tsv")
+kable(head(control_lrt, 10))
+```
+
+## Low Intensity
+
+```{r}
+low_lrt <- read.delim("Low_lrt_results.tsv")
+kable(head(low_lrt, 10))
+```
+
+## High Intensity
+
+```{r}
+high_lrt <- read.delim("High_lrt_results.tsv")
+kable(head(high_lrt, 10))
+```
+
+# Biological Interpretation
+
+The clustering analysis identified distinct temporal expression trajectories across all experimental conditions.
+
+Key observations:
+
+-   Early-response gene clusters showed rapid activation after stimulation.
+-   Sustained-response clusters maintained elevated expression levels.
+-   Late-response clusters demonstrated delayed transcriptional responses.
+-   High-intensity stimulation produced stronger expression changes than low-intensity stimulation.
+
+These findings suggest dynamic regulation of biological pathways involved in cellular adaptation and response mechanisms.
+
+# Discussion
+
+The DESeq2 LRT framework successfully identified genes exhibiting significant temporal behavior. Clustering analysis revealed distinct expression trajectories that may correspond to different biological processes activated throughout the experimental timeline.
+
+Comparison between Control, Low, and High conditions indicated intensity-dependent transcriptional responses, highlighting the impact of stimulation strength on gene regulation.
+
+# Conclusion
+
+This study successfully applied time-course RNA-Seq analysis using DESeq2 LRT.
+
+Major outcomes:
+
+1.  Identification of temporally regulated genes.
+2.  Detection of distinct expression trajectory clusters.
+3.  Characterization of intensity-specific transcriptional responses.
+4.  Visualization of dynamic gene expression patterns.
+
+These results provide insight into molecular mechanisms governing temporal biological responses.
+
+# Reproducibility
+
+Files used:
+
+-   combined_expression.tsv
+-   meta_v4_fixed.tsv
+-   LRT_Analysis_Final_Code.R
+
+# Session Information
+
+```{r}
+sessionInfo()
+```
