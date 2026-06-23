@@ -1,0 +1,318 @@
+---
+title: "Integrated Transcriptomic Analysis of Dilated and Ischemic Cardiomyopathy"
+author: "Anas Jamshed"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: hide
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+
+library(knitr)
+library(ggplot2)
+library(dplyr)
+```
+
+# Abstract
+
+Cardiomyopathy is a major cause of heart failure and cardiovascular mortality worldwide. This study integrates six independent Gene Expression Omnibus (GEO) microarray datasets to investigate transcriptomic alterations associated with ischemic and non-ischemic cardiomyopathy.
+
+The workflow involved GEO data acquisition, probe annotation harmonization, Entrez Gene ID mapping, multi-study integration, batch effect correction using ComBat, differential expression analysis using Limma, and downstream visualization using PCA, heatmaps, correlation matrices, and volcano plots.
+
+# Introduction
+
+Individual microarray studies often suffer from limited sample sizes and platform-specific biases. Integrating multiple independent datasets improves statistical power and biological robustness.
+
+The following GEO datasets were analyzed:
+
+| GEO Series | Platform |
+|------------|----------|
+| GSE1145    | GPL570   |
+| GSE1869    | GPL96    |
+| GSE3585    | GPL96    |
+| GSE3586    | GPL3050  |
+| GSE9128    | GPL96    |
+| GSE42955   | GPL96    |
+
+# Study Design
+
+The analysis compared:
+
+-   Control samples
+-   Non-Ischemic Cardiomyopathy (DCM)
+-   Ischemic Cardiomyopathy (ICM)
+
+# Target Genes
+
+The study focused on several cardiomyopathy-associated genes.
+
+```{r}
+target_genes <- c(
+"ACTN2","CRYAB","BMP10",
+"CSRP3","DES","FHOD3",
+"FLNC","LDB3","MYZAP",
+"MYPN","MYOZ2","NEXN",
+"PDLIM3","PDLIM5",
+"TCAP","TTN"
+)
+
+kable(
+data.frame(Target_Gene = target_genes),
+caption = "Cardiomyopathy Candidate Genes"
+)
+```
+
+# Materials and Methods
+
+## Data Acquisition
+
+Public microarray datasets were downloaded from NCBI GEO using the GEOquery package.
+
+## Gene Annotation
+
+Probe identifiers were converted into Entrez Gene IDs using AnnotationDbi and org.Hs.eg.db.
+
+## Dataset Integration
+
+Expression matrices were aggregated at gene level and merged using common Entrez Gene IDs.
+
+## Metadata Harmonization
+
+Clinical labels from all studies were standardized into:
+
+-   Control Group
+-   Non-Ischemic CM
+-   Ischemic CM
+
+## Batch Effect Correction
+
+To minimize study-specific variation, ComBat from the sva package was applied.
+
+## Differential Expression Analysis
+
+Differential expression analysis was performed using:
+
+-   Limma
+-   Voom normalization
+-   Empirical Bayes moderation
+
+## Visualization
+
+The following visualizations were generated:
+
+-   PCA
+-   Heatmaps
+-   Correlation Heatmaps
+-   Volcano Plots
+-   Enhanced Volcano Plots
+-   Boxplots
+
+# Differential Expression Results
+
+## Non-Ischemic Cardiomyopathy vs Control
+
+```{r}
+dc <- read.csv(
+"Differentially_expressed_genes_control_vs_Dilated_cardiomypaty.csv"
+)
+
+kable(
+head(dc[,c("GENE_SYMBOL","logFC","adj.P.Val")],20),
+caption = "Top Differentially Expressed Genes"
+)
+```
+
+## Ischemic Cardiomyopathy vs Control
+
+```{r}
+icm <- read.csv(
+"Differentially_expressed_genes_control_vs_ischemic_cardiomypaty.csv"
+)
+
+kable(
+head(icm[,c("GENE_SYMBOL","logFC","adj.P.Val")],20),
+caption = "Top Differentially Expressed Genes"
+)
+```
+
+# Principal Component Analysis
+
+Principal Component Analysis was performed after batch correction.
+
+## Non-Ischemic Cardiomyopathy
+
+```{r}
+knitr::include_graphics(
+"PCA_control_vs_Dilated_Cardiomyopaty.png"
+)
+```
+
+## Ischemic Cardiomyopathy
+
+```{r}
+knitr::include_graphics(
+"PCA_control_vs_Ischemic_Cardiomyopaty.png"
+)
+```
+
+## Integrated Dataset
+
+```{r}
+knitr::include_graphics(
+"PCA_All_data.png"
+)
+```
+
+# Heatmap Analysis
+
+## Control vs Non-Ischemic Cardiomyopathy
+
+```{r}
+knitr::include_graphics(
+"control_vs_Dilated_heatmap.png"
+)
+```
+
+## Control vs Ischemic Cardiomyopathy
+
+```{r}
+knitr::include_graphics(
+"control_vs_ischemic_heatmap.png"
+)
+```
+
+# Correlation Analysis
+
+```{r}
+knitr::include_graphics(
+"corrheatmap.png"
+)
+```
+
+# Volcano Plot Analysis
+
+## Non-Ischemic Cardiomyopathy
+
+```{r}
+knitr::include_graphics(
+"DC_volcano.png"
+)
+```
+
+## Ischemic Cardiomyopathy
+
+```{r}
+knitr::include_graphics(
+"Ischemic_volcano.png"
+)
+```
+
+# Enhanced Volcano Plots
+
+## Ischemic Cardiomyopathy
+
+```{r}
+knitr::include_graphics(
+"enhancedvolcanoiscochemvsControl_0.5.jpeg"
+)
+```
+
+## Non-Ischemic Cardiomyopathy
+
+```{r}
+knitr::include_graphics(
+"enhancedvolcanoDCvsControl_0.5.jpeg"
+)
+```
+
+# Boxplot Analysis
+
+## Control vs Non-Ischemic CM
+
+```{r}
+knitr::include_graphics(
+"Boxplot_Control_vs_Dilated.png"
+)
+```
+
+## Control vs Ischemic CM
+
+```{r}
+knitr::include_graphics(
+"Boxplot_Control_vs_Ischemic.png"
+)
+```
+
+# Biological Interpretation
+
+Several cardiomyopathy-associated genes exhibited differential expression patterns.
+
+Key genes identified included:
+
+-   TTN
+-   ACTN2
+-   DES
+-   FLNC
+-   CRYAB
+-   FHOD3
+-   PDLIM3
+-   PDLIM5
+-   MYOZ2
+
+These genes are involved in:
+
+-   Sarcomere organization
+-   Cytoskeletal integrity
+-   Cardiac contractility
+-   Mechanical signaling
+-   Heart failure progression
+
+# Discussion
+
+Integration of six independent transcriptomic studies substantially improved statistical power and biological consistency.
+
+ComBat correction reduced platform-specific batch effects while Limma identified robust disease-associated transcriptional signatures.
+
+PCA and heatmap analyses demonstrated clear separation between disease and control samples.
+
+# Conclusion
+
+This study successfully integrated six GEO microarray datasets to identify transcriptional alterations associated with cardiomyopathy.
+
+Major analytical steps included:
+
+1.  GEO Data Collection
+2.  Gene Annotation
+3.  Dataset Integration
+4.  Batch Effect Correction
+5.  Differential Expression Analysis
+6.  PCA
+7.  Heatmap Analysis
+8.  Volcano Plot Analysis
+
+The identified genes represent potential biomarkers and therapeutic targets for future experimental validation.
+
+# Reproducibility
+
+Source scripts used in this project:
+
+-   download_data.R
+-   cardiomyopathy_analysis.R
+
+# Session Information
+
+```{r}
+sessionInfo()
+```
