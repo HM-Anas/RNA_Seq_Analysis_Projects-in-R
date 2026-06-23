@@ -15,7 +15,6 @@ This project identifies genes with significant temporal expression changes using
 5. Cluster visualization
 
 ## Outputs
-
 - LRT result tables
 - Significant gene lists
 - Cluster plots for each condition
